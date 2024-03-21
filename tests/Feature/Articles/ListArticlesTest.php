@@ -17,7 +17,7 @@ class ListArticlesTest extends TestCase
         $this->withoutExceptionHandling();
         $article = Article::factory()->create();
 
-        $response = $this->getJson(route('api.v1.articles.show', $article->getRouteKey()))->dump();
+        $response = $this->getJson(route('api.v1.articles.show', $article->getRouteKey()));
 
         $response->assertExactJson([
             'data' => [
@@ -69,6 +69,8 @@ class ListArticlesTest extends TestCase
     /** @test */
     public function can_create_articles()
     {
+        $this->withoutExceptionHandling();
+
         $response = $this->postJson(route('api.v1.articles.create'), [
             'data' => [
                 'type' => 'articles',
@@ -80,8 +82,23 @@ class ListArticlesTest extends TestCase
             ]
         ]);
 
-        $article = Article::fist();
+        $article = Article::first();
 
+        $response->assertHeader('Location', route('api.v1.articles.show', $article->getRouteKey()));
         $response->assertCreated();
+        $response->assertExactJson([
+            'data' => [
+                'type' => 'articles',
+                'id' => (string) $article->getRouteKey(), //json-api: el id tiene que ser un string
+                'attributes' => [
+                    'title' => 'nuevo articulo',
+                    'slug' => 'nuevo-articulo',
+                    'content' => 'contenido del nuevo articulo'
+                ],
+                'links' => [
+                    'self' => route('api.v1.articles.show', $article->getRouteKey())
+                ]
+            ]
+        ]);
     }
 }

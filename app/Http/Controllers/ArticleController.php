@@ -27,7 +27,15 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->input('data.attributes');
+
+        $article = Article::create([
+            'title' => $data['title'],
+            'slug' => $data['slug'],
+            'content' => $data['content'],
+        ]);
+
+        return ArticleResource::make($article);
     }
 
     /**

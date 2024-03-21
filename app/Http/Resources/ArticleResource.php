@@ -23,13 +23,13 @@ class ArticleResource extends JsonResource
                 'content' => $this->resource->content,
             ],
             'links' => [
-                'self' => route('api.v1.articles.show', $this->resource->getRouteKey())
+                'self' => route('api.v1.articles.show', $this->resource)
             ]
         ];
     }
 
     public function toResponse($request)
     {
-        return parent::toResponse($request)->withHeaders('Location', route('api.v1.articles.create', $this->resource));
+        return parent::toResponse($request)->withHeaders(['Location' => route('api.v1.articles.show', $this->resource)]);
     }
 }

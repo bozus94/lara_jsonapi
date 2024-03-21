@@ -58,6 +58,7 @@ class ListArticlesTest extends TestCase
         }
 
         $response = $this->getJson(route('api.v1.articles.index'));
+
         $response->assertExactJson([
             'data' => $articlesJson,
             'links' => [
@@ -83,7 +84,7 @@ class ListArticlesTest extends TestCase
         ]);
 
         $article = Article::first();
-
+        // la apiJson exige que se devuelva el header location
         $response->assertHeader('Location', route('api.v1.articles.show', $article->getRouteKey()));
         $response->assertCreated();
         $response->assertExactJson([

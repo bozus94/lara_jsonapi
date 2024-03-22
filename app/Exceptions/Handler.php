@@ -54,8 +54,7 @@ class Handler extends ExceptionHandler
     protected function invalidJson($request, ValidationException $exception): JsonResponse
     {
         /* foreach version
-
-         $errors = $errors
+             $errors = $errors
             foreach ($exception->errors() as $field => $message) {
                 $pointer = '/' . Str::replace('.', '/', $field);
                 $errors[] =  [
@@ -67,7 +66,6 @@ class Handler extends ExceptionHandler
                 ];
             };
          */
-
 
         return response()->json([
             'errors' => collect($exception->errors())

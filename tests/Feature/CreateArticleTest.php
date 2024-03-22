@@ -6,16 +6,35 @@ use Tests\TestCase;
 use App\Models\Article;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Testing\TestResponse;
 
 class CreateArticleTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+        TestResponse::macro(
+            'assertJsonApiValidationErrors',
+            function (string $attribute) {
+                /** @var TestResponse $this   */
+                $this->assertJsonStructure([
+                    'errors' => [
+                        ['title', 'detail', 'source']
+                    ]
+                ])->assertJsonFragment([
+                    'source' =>  ['pointer' => '/data/attributes/' . $attribute]
+                ])->assertStatus(422)
+                    ->assertHeader('content-type', 'application/vnd.api+json');
+            }
+        );
+    }
+
     /** @test */
     public function can_create_articles()
     {
         $this->withoutExceptionHandling();
-
         $response = $this->postJson(route('api.v1.articles.create'), [
             'data' => [
                 'type' => 'articles',
@@ -30,6 +49,7 @@ class CreateArticleTest extends TestCase
         $article = Article::first();
         // la especificacion json-api exige que se devuelva el header location.
         $response->assertHeader('Location', route('api.v1.articles.show', $article->getRouteKey()));
+
         $response->assertCreated();
         $response->assertExactJson([
             'data' => [
@@ -60,16 +80,8 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonStructure([
-            'errors' => [
-                ['title', 'detail', 'source']
-            ]
-        ])->assertJsonFragment([
-            'source' =>  ['pointer' => '/data/attributes/title']
-        ])->assertStatus(422)
-            ->assertHeader('content-type', 'application/vnd.api+json');
 
-        // $response->assertJsonValidationErrors('data.attributes.title');
+        $response->assertJsonApiValidationErrors('title');
     }
 
     /** @test */
@@ -86,7 +98,7 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.title');
+        $response->assertJsonApiValidationErrors('title');
     }
 
     /** @test */
@@ -102,7 +114,7 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.slug');
+        $response->assertJsonApiValidationErrors('slug');
     }
 
     /** @test */
@@ -118,6 +130,6 @@ class CreateArticleTest extends TestCase
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.content');
+        $response->assertJsonApiValidationErrors('content');
     }
 }

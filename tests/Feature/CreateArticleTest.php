@@ -12,25 +12,6 @@ class CreateArticleTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-        TestResponse::macro(
-            'assertJsonApiValidationErrors',
-            function (string $attribute) {
-                /** @var TestResponse $this   */
-                $this->assertJsonStructure([
-                    'errors' => [
-                        ['title', 'detail', 'source']
-                    ]
-                ])->assertJsonFragment([
-                    'source' =>  ['pointer' => '/data/attributes/' . $attribute]
-                ])->assertStatus(422)
-                    ->assertHeader('content-type', 'application/vnd.api+json');
-            }
-        );
-    }
-
     /** @test */
     public function can_create_articles()
     {

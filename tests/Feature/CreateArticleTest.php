@@ -54,15 +54,24 @@ class CreateArticleTest extends TestCase
             'data' => [
                 'type' => 'articles',
                 'attributes' => [
-                    'slug' => 'nuevo-articulo',
+                    'title' => 'asd',
                     'content' => 'contenido del nuevo articulo'
                 ]
             ]
         ]);
 
-        $response->assertJsonValidationErrors('data.attributes.title');
+        $response->assertJsonStructure([
+            'errors' => [
+                ['title', 'detail', 'source']
+            ]
+        ])->assertJsonFragment([
+            'source' =>  ['pointer' => '/data/attributes/title']
+        ])->assertStatus(422)
+            ->assertHeader('content-type', 'application/vnd.api+json');
+
+        // $response->assertJsonValidationErrors('data.attributes.title');
     }
-    
+
     /** @test */
     public function title_must_be_at_least_8_characters()
     {

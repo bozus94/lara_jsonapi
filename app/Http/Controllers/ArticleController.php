@@ -32,9 +32,8 @@ class ArticleController extends Controller
             'data.attributes.slug' => ['required',],
             'data.attributes.content' => ['required'],
         ]);
+
         $data = $request->input('data.attributes');
-
-
         $article = Article::create([
             'title' => $data['title'],
             'slug' => $data['slug'],

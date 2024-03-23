@@ -3,9 +3,10 @@
 namespace App\Providers;
 
 use Closure;
+use Exception;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Support\ServiceProvider;
-use PHPUnit\Framework\Assert;
+use PHPUnit\Framework\Assert as PHPUnit;
 use PHPUnit\Framework\ExpectationFailedException;
 
 class JsonApiServiceProvider extends ServiceProvider
@@ -36,22 +37,26 @@ class JsonApiServiceProvider extends ServiceProvider
     public function AssertJsonApiValidationsErrors(): Closure
     {
         return function (string $attribute) {
+
             /** @var TestResponse $this   */
             try {
                 $this->assertJsonFragment([
-                    'source' =>  ['pointer' => "/data/attributes/'{$attribute}'"]
+                    'source' =>  [
+                        'pointer' => "/data/attributes/{$attribute}"
+                    ]
                 ]);
-            } catch (ExpectationFailedException $th) {
-                Assert::fail('adsad') .
-                    \PHP_EOL . \PHP_EOL .
-                    $th->getMessage();
+            } catch (ExpectationFailedException $e) {
+                PHPUnit::fail("Failed to find a JSON:API validation error for key:'{$attribute}'" . PHP_EOL . PHP_EOL . $e->getMessage());
             }
-
-            $this->assertJsonStructure([
-                'errors' => [
-                    ['title', 'detail', 'source']
-                ]
-            ]);
+            try {
+                $this->assertJsonStructure([
+                    'errors' => [
+                        ['title', 'detail', 'source' => ['pointer']]
+                    ]
+                ]);
+            } catch (ExpectationFailedException $e) {
+                PHPUnit::fail("Failed to find a valid JSON:API error response'");
+            }
 
             $this->assertStatus(422)
                 ->assertHeader('content-type', 'application/vnd.api+json');

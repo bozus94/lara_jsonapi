@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Closure;
 use Exception;
+use Illuminate\Support\Str;
 use Illuminate\Testing\TestResponse;
 use Illuminate\Support\ServiceProvider;
 use PHPUnit\Framework\Assert as PHPUnit;
@@ -39,15 +40,21 @@ class JsonApiServiceProvider extends ServiceProvider
         return function (string $attribute) {
 
             /** @var TestResponse $this   */
+
+            $pointer = Str::of($attribute)->startsWith('data')
+                ? '/' . \str_replace('.', '/', $attribute)
+                : "/data/attributes/{$attribute}";
+
             try {
                 $this->assertJsonFragment([
                     'source' =>  [
-                        'pointer' => "/data/attributes/{$attribute}"
+                        'pointer' => $pointer
                     ]
                 ]);
             } catch (ExpectationFailedException $e) {
                 PHPUnit::fail("Failed to find a JSON:API validation error for key:'{$attribute}'" . PHP_EOL . PHP_EOL . $e->getMessage());
             }
+
             try {
                 $this->assertJsonStructure([
                     'errors' => [

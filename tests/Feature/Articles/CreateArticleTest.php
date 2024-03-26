@@ -16,32 +16,21 @@ class CreateArticleTest extends TestCase
     public function can_create_articles()
     {
         $this->withoutExceptionHandling();
-        $response = $this->postJson(route('api.v1.articles.create'), [
+
+        $dataToCreate = [
             'title' => 'nuevo articulo',
             'slug' => 'nuevo-articulo',
             'content' => 'contenido del nuevo articulo'
+        ];
 
-        ]);
+        $response = $this->postJson(route('api.v1.articles.create'), $dataToCreate);
 
         $article = Article::first();
-        // la especificacion json-api exige que se devuelva el header location.
-        $response->assertHeader('Location', route('api.v1.articles.show', $article->getRouteKey()));
 
-        $response->assertCreated();
-        $response->assertExactJson([
-            'data' => [
-                'type' => 'articles',
-                'id' => (string) $article->getRouteKey(), //json-api: el id tiene que ser un string
-                'attributes' => [
-                    'title' => 'nuevo articulo',
-                    'slug' => 'nuevo-articulo',
-                    'content' => 'contenido del nuevo articulo'
-                ],
-                'links' => [
-                    'self' => route('api.v1.articles.show', $article->getRouteKey())
-                ]
-            ]
-        ]);
+        // la especificación json-api exige que se devuelva el header location.
+        $response->assertHeader('Location', route('api.v1.articles.show', $article->getRouteKey()))
+            ->assertCreated()
+            ->assertExactJsonApiResponse($article, $dataToCreate, 'articles');
     }
 
     /** @test */

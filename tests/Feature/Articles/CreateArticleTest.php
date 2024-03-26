@@ -17,14 +17,10 @@ class CreateArticleTest extends TestCase
     {
         $this->withoutExceptionHandling();
         $response = $this->postJson(route('api.v1.articles.create'), [
-            'data' => [
-                'type' => 'articles',
-                'attributes' => [
-                    'title' => 'nuevo articulo',
-                    'slug' => 'nuevo-articulo',
-                    'content' => 'contenido del nuevo articulo'
-                ]
-            ]
+            'title' => 'nuevo articulo',
+            'slug' => 'nuevo-articulo',
+            'content' => 'contenido del nuevo articulo'
+
         ]);
 
         $article = Article::first();
@@ -52,15 +48,9 @@ class CreateArticleTest extends TestCase
     public function title_is_required()
     {
         $response = $this->postJson(route('api.v1.articles.create'), [
-            'data' => [
-                'type' => 'articles',
-                'attributes' => [
-                    'slug' => 'slug',
-                    'content' => 'contenido del nuevo articulo'
-                ]
-            ]
+            'slug' => 'slug',
+            'content' => 'contenido del nuevo articulo'
         ]);
-
 
         $response->assertJsonApiValidationErrors('title');
     }
@@ -69,14 +59,9 @@ class CreateArticleTest extends TestCase
     public function title_must_be_at_least_8_characters()
     {
         $response = $this->postJson(route('api.v1.articles.create'), [
-            'data' => [
-                'type' => 'articles',
-                'attributes' => [
-                    'title' => 'asd',
-                    'slug' => 'nuevo-articulo',
-                    'content' => 'contenido del nuevo articulo'
-                ]
-            ]
+            'title' => 'asd',
+            'slug' => 'nuevo-articulo',
+            'content' => 'contenido del nuevo articulo'
         ]);
 
         $response->assertJsonApiValidationErrors('title');
@@ -86,13 +71,8 @@ class CreateArticleTest extends TestCase
     public function slug_is_required()
     {
         $response = $this->postJson(route('api.v1.articles.create'), [
-            'data' => [
-                'type' => 'articles',
-                'attributes' => [
-                    'title' => 'nuevo articulo',
-                    'content' => 'contenido del nuevo articulo'
-                ]
-            ]
+            'title' => 'nuevo articulo',
+            'content' => 'contenido del nuevo articulo'
         ]);
 
         $response->assertJsonApiValidationErrors('slug');
@@ -102,15 +82,9 @@ class CreateArticleTest extends TestCase
     public function content_is_required()
     {
         $response = $this->postJson(route('api.v1.articles.create'), [
-            'data' => [
-                'type' => 'articles',
-                'attributes' => [
-                    'title' => 'nuevo articulo',
-                    'slug' => 'nuevo-articulo',
-                ]
-            ]
+            'title' => 'nuevo articulo',
+            'slug' => 'nuevo-articulo',
         ]);
-
         $response->assertJsonApiValidationErrors('content');
     }
 }

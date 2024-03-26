@@ -14,6 +14,8 @@ class ValidateJsonApiDocumentTest extends TestCase
 
     protected function setUp(): void
     {
+        $this->withoutFormattedData();
+
         parent::setUp();
         Route::any(
             '/test',
@@ -64,7 +66,7 @@ class ValidateJsonApiDocumentTest extends TestCase
 
 
     /** @test */
-    public function attributtes_is_required()
+    public function attributes_is_required()
     {
         $this->postJson('test', [
             'data' => [

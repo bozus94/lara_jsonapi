@@ -6,6 +6,7 @@ use App\Http\Resources\ArticleCollection;
 use App\Http\Resources\ArticleResource;
 use App\Models\Article;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ArticleController extends Controller
 {
@@ -29,11 +30,12 @@ class ArticleController extends Controller
     {
         $request->validate([
             'data.attributes.title' => ['required', 'min:8'],
-            'data.attributes.slug' => ['required',],
-            'data.attributes.content' => ['required'],
+            'data.attributes.slug' => ['required', 'unique:articles,slug'],
+            'data.attributes.content' => ['required', 'min:50'],
         ]);
 
         $data = $request->input('data.attributes');
+
         $article = Article::create([
             'title' => $data['title'],
             'slug' => $data['slug'],
@@ -65,8 +67,8 @@ class ArticleController extends Controller
     {
         $request->validate([
             'data.attributes.title' => ['required', 'min:8'],
-            'data.attributes.slug' => ['required',],
-            'data.attributes.content' => ['required'],
+            'data.attributes.slug' => ['required', Rule::unique('articles', 'slug')->ignore($article->id, 'id')],
+            'data.attributes.content' => ['required', 'min:50'],
         ]);
 
         $data = $request->input('data.attributes');
@@ -88,6 +90,8 @@ class ArticleController extends Controller
      */
     public function destroy(Article $article)
     {
-        //
+        $article->delete();
+
+        return response()->noContent();
     }
 }

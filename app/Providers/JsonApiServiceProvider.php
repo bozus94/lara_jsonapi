@@ -48,7 +48,7 @@ class JsonApiServiceProvider extends ServiceProvider
             /** @var TestResponse $this   */
 
             $pointer = Str::of($attribute)->startsWith('data')
-                ? '/' . \str_replace('.', '/', $attribute)
+                ? '/' . str_replace('.', '/', $attribute)
                 : "/data/attributes/{$attribute}";
 
             try {

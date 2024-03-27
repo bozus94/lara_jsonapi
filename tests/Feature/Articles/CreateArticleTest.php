@@ -66,6 +66,19 @@ class CreateArticleTest extends TestCase
 
         $response->assertJsonApiValidationErrors('slug');
     }
+    /** @test */
+    public function slug_is_unique()
+    {
+        $article = Article::factory()->create();
+
+        $response = $this->postJson(route('api.v1.articles.create'), [
+            'title' => 'nuevo articulo',
+            'slug' => $article->slug,
+            'content' => 'contenido del nuevo articulo'
+        ]);
+
+        $response->assertJsonApiValidationErrors('slug');
+    }
 
     /** @test */
     public function content_is_required()
@@ -74,6 +87,18 @@ class CreateArticleTest extends TestCase
             'title' => 'nuevo articulo',
             'slug' => 'nuevo-articulo',
         ]);
+        $response->assertJsonApiValidationErrors('content');
+    }
+
+    /** @test */
+    public function content_must_be_at_least_50_characters()
+    {
+        $response = $this->postJson(route('api.v1.articles.create'), [
+            'title' => 'nuevo articulo',
+            'slug' => 'nuevo-articulo',
+            'content' => 'contenido nuevo'
+        ]);
+
         $response->assertJsonApiValidationErrors('content');
     }
 }

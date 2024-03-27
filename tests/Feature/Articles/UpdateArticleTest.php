@@ -71,6 +71,20 @@ class UpdateArticleTest extends TestCase
     }
 
     /** @test */
+    public function can_update_article_when_it_is_the_same_slug()
+    {
+        $article = Article::factory()->create();
+
+        $response = $this->patchJson(route('api.v1.articles.update', $article), [
+            'title' => 'nuevo articulo',
+            'slug' => $article->slug,
+            'content' => "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam, voluptates! Nulla, et. Recusandae ratione eligendi autem! Ipsam expedita quas labore molestiae mollitia debitis, animi soluta reprehenderit quam repellendus ab, voluptates quibusdam accusantium explicabo ullam adipisci natus! Atque perspiciatis aliquam dolor, natus perferendis quisquam quas dolore nisi, nesciunt sed nihil sunt consequuntur."
+        ]);
+
+        $response->assertOk('slug');
+    }
+
+    /** @test */
     public function content_is_required()
     {
         $article = Article::factory()->create();

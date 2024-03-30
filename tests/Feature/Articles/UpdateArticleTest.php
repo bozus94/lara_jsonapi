@@ -21,7 +21,7 @@ class UpdateArticleTest extends TestCase
         $dataToUpdate = [
             'title' => 'articulo editado',
             'slug' => 'articulo editado',
-            'content' => 'contenido del articulo editado'
+            'content' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio, quia! Eum fuga repudiandae veniam consequatur minima quibusdam cumque delectus quo sed tenetur, ullam officia assumenda magnam quod itaque vero iste dicta? Magni labore cumque delectus aspernatur tempora adipisci, at, corporis aliquid voluptatem optio amet exercitationem itaque temporibus, magnam veritatis enim!'
         ];
 
         $response = $this->patchJson(route('api.v1.articles.update', $article), $dataToUpdate)->assertOk();
@@ -52,7 +52,7 @@ class UpdateArticleTest extends TestCase
         $response = $this->patchJson(route('api.v1.articles.update', $article), [
             'title' => 'asd',
             'slug' => 'nuevo-articulo',
-            'content' => 'contenido del nuevo articulo'
+            'content' => 'Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatem, sapiente quasi. Porro nostrum recusandae doloremque labore harum culpa magni eos nobis similique consequuntur animi ea impedit quo inventore, fugit minima adipisci ratione sed beatae a officiis! Obcaecati dicta recusandae perferendis maiores ex, quisquam saepe ea quos quas temporibus atque. Eaque!'
         ]);
 
         $response->assertJsonApiValidationErrors('title');
@@ -78,10 +78,10 @@ class UpdateArticleTest extends TestCase
         $response = $this->patchJson(route('api.v1.articles.update', $article), [
             'title' => 'nuevo articulo',
             'slug' => $article->slug,
-            'content' => "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Nam, voluptates! Nulla, et. Recusandae ratione eligendi autem! Ipsam expedita quas labore molestiae mollitia debitis, animi soluta reprehenderit quam repellendus ab, voluptates quibusdam accusantium explicabo ullam adipisci natus! Atque perspiciatis aliquam dolor, natus perferendis quisquam quas dolore nisi, nesciunt sed nihil sunt consequuntur."
+            'content' => "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Recusandae deserunt minus suscipit doloribus itaque consequatur error esse nostrum nisi. Sed mollitia veritatis porro, ut harum illo facilis maxime pariatur recusandae. Nisi sunt voluptatem, vitae quas soluta error, harum natus excepturi esse unde corrupti praesentium provident repudiandae quisquam amet possimus quaerat?"
         ]);
 
-        $response->assertOk('slug');
+        $response->assertOk();
     }
 
     /** @test */

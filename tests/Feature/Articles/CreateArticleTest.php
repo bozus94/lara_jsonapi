@@ -20,7 +20,7 @@ class CreateArticleTest extends TestCase
         $dataToCreate = [
             'title' => 'nuevo articulo',
             'slug' => 'nuevo-articulo',
-            'content' => 'contenido del nuevo articulo'
+            'content' => 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolore, voluptates nemo? Reprehenderit sit ducimus, tenetur nobis nam facilis sed debitis iure hic sapiente omnis eos illo labore earum id aliquid illum error asperiores quasi enim aut totam itaque eius dolore! Nobis nam esse dolor atque laboriosam nisi est maxime sequi.'
         ];
 
         $response = $this->postJson(route('api.v1.articles.create'), $dataToCreate);
